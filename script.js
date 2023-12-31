@@ -16,25 +16,32 @@ const getClassByRate = (vote) => {
 };
 
 const showMovies = (movies) => {
-    movies.forEach((movie) => {
-      const {
-        title,
-        poster_path,
-        vote_average,
-        overview,
-        release_date,
-        original_language,
-        genre_ids,
-        adult,
-        id,
-        video,
-        vote_count,
-        popularity,
-      } = movie;
+  movies.forEach((movie) => {
+    const {
+      title,
+      poster_path,
+      vote_average,
+      overview,
+      release_date,
+      original_language,
+      genre_ids,
+      adult,
+      id,
+      video,
+      vote_count,
+      popularity,
+    } = movie;
+
     const movieElement = document.createElement("div");
     movieElement.classList.add("movie");
-   movieElement.innerHTML = `
-      <img src="${IMG_PATH + poster_path}" alt="${title}" />
+
+    // Set the poster path or use a placeholder if not available
+    const posterSrc = poster_path
+      ? IMG_PATH + poster_path
+      : "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg";
+
+    movieElement.innerHTML = `
+      <img src="${posterSrc}" alt="${title}" />
       <div class="movie-info">
         <h3>${title}</h3>
         <span class="${getClassByRate(vote_average)}">${vote_average}</span>
@@ -48,9 +55,11 @@ const showMovies = (movies) => {
         <p><strong>Plot:</strong>${overview}</p>
       </div>
     `;
+
     main.appendChild(movieElement);
   });
 };
+
 
 
 const getMovies = async (url) => {
