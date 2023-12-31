@@ -5,6 +5,9 @@ const SEARCH_API = `https://api.themoviedb.org/3/search/movie?api_key=${KEY}&que
 const main = document.getElementById("main");
 const form = document.getElementById("form");
 const search = document.getElementById("search");
+const GENRE_SELECT = document.getElementById("genre"); // Add this line
+
+let currentPage = 1;
 
 const getClassByRate = (vote) => {
   if (vote >= 7.5) return "green";
@@ -13,28 +16,42 @@ const getClassByRate = (vote) => {
 };
 
 const showMovies = (movies) => {
-  main.innerHTML = "";
-  movies.forEach((movie) => {
-    const { title, poster_path, vote_average, overview } = movie;
+    movies.forEach((movie) => {
+      const {
+        title,
+        poster_path,
+        vote_average,
+        overview,
+        release_date,
+        original_language,
+        genre_ids,
+        adult,
+        id,
+        video,
+        vote_count,
+        popularity,
+      } = movie;
     const movieElement = document.createElement("div");
     movieElement.classList.add("movie");
-    movieElement.innerHTML = `
-    <img
-      src="${IMG_PATH + poster_path}"
-      alt="${title}"
-    />
-    <div class="movie-info">
-      <h3>${title}</h3>
-      <span class="${getClassByRate(vote_average)}">${vote_average}</span>
-    </div>
-    <div class="overview">
-      <h3>Overview</h3>
-      ${overview}
-    </div>
-  `;
+   movieElement.innerHTML = `
+      <img src="${IMG_PATH + poster_path}" alt="${title}" />
+      <div class="movie-info">
+        <h3>${title}</h3>
+        <span class="${getClassByRate(vote_average)}">${vote_average}</span>
+      </div>
+      <div class="overview">
+        <h3>Overview</h3>
+        <p><strong>Release Date:</strong> ${release_date}</p>
+        <p><strong>Adults Only:</strong> ${adult}</p>
+        <p><strong>Vote Count:</strong> ${vote_count}</p>
+        <p><strong>Popularity:</strong> ${popularity}</p>
+        <p><strong>Plot:</strong>${overview}</p>
+      </div>
+    `;
     main.appendChild(movieElement);
   });
 };
+
 
 const getMovies = async (url) => {
   const res = await fetch(url);
@@ -42,33 +59,66 @@ const getMovies = async (url) => {
   showMovies(data.results);
 };
 
-// Function to get the language parameter from the URL
 const getLanguageFromURL = () => {
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get("language") || "en"; // Default to English if language is not specified
+  return urlParams.get("language") || "en";
 };
 
-// Function to update the API URL with the language parameter
-const updateApiUrlWithLanguage = (language) => {
-  const API_URL = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_original_language=${language}&api_key=${KEY}&page=1`;
+const updateApiUrlWithLanguageAndPage = (language, page, genre) => {
+  console.log("page number:", page);
+  const genreParam = genre ? `&with_genres=${genre}` : '';
+  const API_URL = `https://api.themoviedb.org/3/discover/movie?sort_by=release_date.desc&with_original_language=${language}${genreParam}&api_key=${KEY}&page=${page}`;
   return API_URL;
 };
 
-// Initial load with default language
 const initialLanguage = getLanguageFromURL();
-const initialApiUrl = updateApiUrlWithLanguage(initialLanguage);
+const initialApiUrl = updateApiUrlWithLanguageAndPage(initialLanguage, currentPage, ""); // Add an empty string as the initial genre
 getMovies(initialApiUrl);
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const searchTerm = search.value;
-  if (searchTerm && searchTerm !== "") {
-    getMovies(SEARCH_API + searchTerm);
+  const selectedGenre = GENRE_SELECT.value;
+  if ((searchTerm && searchTerm !== "") || selectedGenre !== "") {
+    getMovies(SEARCH_API + searchTerm + `&with_genres=${selectedGenre}`);
     search.value = "";
   } else {
-    // Reload with the current language when the form is submitted without a search term
     const currentLanguage = getLanguageFromURL();
-    const apiUrl = updateApiUrlWithLanguage(currentLanguage);
+    const apiUrl = updateApiUrlWithLanguageAndPage(currentLanguage, currentPage, selectedGenre);
     getMovies(apiUrl);
   }
 });
+
+window.addEventListener("scroll", () => {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  if (scrollTop + clientHeight >= scrollHeight - 5) {
+    currentPage++;
+    const currentLanguage = getLanguageFromURL();
+    const selectedGenre = GENRE_SELECT.value;
+    const apiUrl = updateApiUrlWithLanguageAndPage(currentLanguage, currentPage, selectedGenre);
+    getMovies(apiUrl);
+  }
+});
+
+const fetchGenres = async () => {
+  const res = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${KEY}`);
+  const data = await res.json();
+  const genres = data.genres;
+
+  genres.forEach((genre) => {
+    const option = document.createElement("option");
+    option.value = genre.id;
+    option.text = genre.name;
+    GENRE_SELECT.appendChild(option);
+  });
+};
+// Event listener for the genre selection
+GENRE_SELECT.addEventListener("change", () => {
+  currentPage = 1; // Reset the page when the genre changes
+  const currentLanguage = getLanguageFromURL();
+  const selectedGenre = GENRE_SELECT.value;
+  const apiUrl = updateApiUrlWithLanguageAndPage(currentLanguage, currentPage, selectedGenre);
+  main.innerHTML = ""; // Clear existing movies
+  getMovies(apiUrl);
+});
+fetchGenres();
