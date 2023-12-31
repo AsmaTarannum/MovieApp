@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap");
+
+:root {
+  --primary-color: #31304D;
+  --secondary-color: #607274;
+}
+
+
+
+        body {
+            background-color: var(--primary-color);
+            color: #fff;
+  font-family: "Poppins", sans-serif;
+
+        }
+
+        .language-tile {
+            cursor: pointer;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .language-tile:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .language-tile img {
+            width: 100%;
+            height: auto;
+        }
+
+        .language-title {
+            text-align: center;
+            margin-top: 10px;
+        }
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+    </style>
+    <title>Language Selection</title>
+</head>
+<body>
+    <header class="text-white text-center py-4">
+        <h1>Should I watch it?</h1>
+    </header>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Choose a Language</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="language-tile" style="background-color: var(--secondary-color);" onclick="redirectToMovies('te')">
+                <img src="images/telugu_poster.jpg" alt="Telugu" class="img-fluid">
+                <h3 class="language-title">Telugu</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="language-tile" style="background-color: var(--secondary-color);" onclick="redirectToMovies('hi')">
+                <img src="images/hindi_poster.jpg" alt="Hindi" class="img-fluid">
+                <h3 class="language-title">Hindi</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="language-tile" style="background-color: var(--secondary-color);" onclick="redirectToMovies('kn')">
+                <img src="images/kannada_poster.jpg" alt="Kannada" class="img-fluid">
+                <h3 class="language-title">Kannada</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="language-tile" style="background-color: var(--secondary-color);" onclick="redirectToMovies('ml')">
+                <img src="images/malayalam_poster.jpg" alt="Malayalam" class="img-fluid">
+                <h3 class="language-title">Malayalam</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="language-tile" style="background-color: var(--secondary-color);" onclick="redirectToMovies('ta')">
+                <img src="images/tamil_poster.jpg" alt="Tamil" class="img-fluid">
+                <h3 class="language-title">Tamil</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="language-tile" style="background-color: var(--secondary-color);" onclick="redirectToMovies('en')">
+                <img src="images/english_poster.jpg" alt="English" class="img-fluid">
+                <h3 class="language-title">English</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function redirectToMovies(language) {
+        window.location.href = `movies.html?language=${language}`;
+    }
+</script>
+
+</body>
+</html>
