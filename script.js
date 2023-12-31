@@ -49,7 +49,6 @@ const showMovies = (movies) => {
       <div class="overview">
         <h3>Overview</h3>
         <p><strong>Release Date:</strong> ${release_date}</p>
-        <p><strong>Adults Only:</strong> ${adult}</p>
         <p><strong>Vote Count:</strong> ${vote_count}</p>
         <p><strong>Popularity:</strong> ${popularity}</p>
         <p><strong>Plot:</strong>${overview}</p>
