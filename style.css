@@ -5,7 +5,13 @@
   --secondary-color: #607274;
 }
 
-
+.genre {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
 * {
   box-sizing: border-box;
 }
